@@ -1,0 +1,17 @@
+[
+    {
+        "decision": "approve",
+        "difficulty": "Easy",
+        "reason": "The question is a clear, fundamental definition check based directly on the source text."
+    },
+    {
+        "decision": "approve",
+        "difficulty": "Medium",
+        "reason": "This question requires the user to connect two related fields mentioned in the text, testing comprehension."
+    },
+    {
+        "decision": "approve",
+        "difficulty": "Easy",
+        "reason": "This is a straightforward 'negative' question, asking the user to identify the item not mentioned in a list from the text."
+    }
+]

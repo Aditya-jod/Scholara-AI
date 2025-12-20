@@ -1,0 +1,35 @@
+{
+  "Machine Learning": {
+    "description": "A field of AI that uses data to improve performance on tasks without being explicitly programmed.",
+    "sub_topics": {
+      "Core Idea": {
+        "description": "Algorithms build a model based on sample 'training data' to make predictions or decisions."
+      },
+      "Types of Learning": {
+        "description": "Different approaches for how algorithms learn from data.",
+        "sub_topics": {
+          "Supervised Learning": {
+            "description": "Learning from data that is already labeled."
+          },
+          "Unsupervised Learning": {
+            "description": "Finding hidden patterns in unlabeled data, related to data mining."
+          }
+        }
+      },
+      "Applications": {
+        "description": "Real-world uses of machine learning.",
+        "sub_topics": {
+          "Speech Recognition": {
+            "description": "Converting spoken language into text."
+          },
+          "Computer Vision": {
+            "description": "Enabling computers to see and interpret visual information from the world."
+          },
+          "Predictive Analytics": {
+            "description": "The application of ML across business problems."
+          }
+        }
+      }
+    }
+  }
+}

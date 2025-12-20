@@ -1,0 +1,35 @@
+[
+  {
+    "concept": "Machine Learning",
+    "question": "What is the primary goal of a machine learning algorithm?",
+    "options": [
+      "To be explicitly programmed for every task.",
+      "To build a model from sample data to make predictions.",
+      "To rely solely on mathematical optimization without data.",
+      "To function as a simple database."
+    ],
+    "correct_answer": "To build a model from sample data to make predictions."
+  },
+  {
+    "concept": "Unsupervised Learning",
+    "question": "Which field is most closely associated with exploratory data analysis through unsupervised learning?",
+    "options": [
+      "Computer Vision",
+      "Data Mining",
+      "Speech Recognition",
+      "Predictive Analytics"
+    ],
+    "correct_answer": "Data Mining"
+  },
+  {
+    "concept": "Applications",
+    "question": "Which of the following is NOT listed as a primary application of machine learning in the text?",
+    "options": [
+      "Email filtering",
+      "Computer Vision",
+      "Quantum Computing",
+      "Speech Recognition"
+    ],
+    "correct_answer": "Quantum Computing"
+  }
+]
