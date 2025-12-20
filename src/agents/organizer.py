@@ -16,14 +16,7 @@ def organize_concepts(concepts: list) -> dict:
     """
     Takes a flat list of concepts and organizes them into a hierarchical
     tree structure using an LLM.
-
-    Args:
-        concepts: A list of concept objects from the Extractor agent.
-
-    Returns:
-        A dictionary representing the root of the concept tree.
     """
-    # Convert the list of concept objects into a simpler list of strings for the prompt
     concept_names = [c["concept"] for c in concepts]
     
     prompt = f"""
