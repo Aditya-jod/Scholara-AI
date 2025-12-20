@@ -14,8 +14,6 @@ def init_db():
     """Initializes the database and creates tables if they don't exist."""
     with _get_db_connection() as conn:
         cursor = conn.cursor()
-        # Create a table to cache agent results
-        # We use a hash of the source text to invalidate the cache if the text changes
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS agent_cache (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -93,7 +91,6 @@ def set_cached_result(agent_name, source_text, output_data, input_data=None):
     print(f"[CACHE] Saved result for agent '{agent_name}'.")
 
 if __name__ == '__main__':
-    # Example usage:
     print("Running DB Manager self-test...")
     init_db()
 
