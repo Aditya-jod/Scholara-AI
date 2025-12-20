@@ -2,7 +2,8 @@ import streamlit as st
 import pandas as pd
 import pypdf
 import io
-from run_pipeline import run_full_pipeline, MODE
+from src.run_pipeline import run_full_pipeline, MODE
+
 
 # --- Page Configuration ---
 st.set_page_config(
