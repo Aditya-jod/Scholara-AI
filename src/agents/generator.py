@@ -81,23 +81,16 @@ Now, generate the JSON for the multiple-choice question about "{concept_name}".
     return questions
 
 if __name__ == '__main__':
+    # NEW: Updated sample text and concepts for CS topic
     sample_source_text = """
-    Photosynthesis is a process used by plants, algae, and certain bacteria to convert light energy into chemical energy, 
-    through a process that converts carbon dioxide and water into glucose (a sugar) and oxygen. 
-    This process is crucial for life on Earth as it produces most of the oxygen in the atmosphere.
-    Cellular respiration is the process by which organisms combine oxygen with foodstuff molecules, 
-    diverting the chemical energy in these substances into life-sustaining activities and discarding, 
-    as waste products, carbon dioxide and water.
+    Machine Learning is a subfield of Artificial Intelligence that gives computers the ability to learn without being explicitly programmed. It is broadly divided into Supervised Learning, which uses labeled data, and Unsupervised Learning, which finds patterns in unlabeled data. A common Supervised Learning algorithm is Linear Regression. Web Development involves creating websites and applications. It consists of Frontend development, which focuses on the user interface using tools like React, and Backend development, which manages the server, database, and application logic using technologies like Node.js.
     """
     sample_concepts = [
-        { "concept": "Photosynthesis", "type": "process", "importance": 0.95 },
-        { "concept": "Cellular respiration", "type": "process", "importance": 0.95 },
-        { "concept": "Glucose", "type": "term", "importance": 0.8 },
-        { "concept": "Plants", "type": "term", "importance": 0.9 },
-        { "concept": "Light energy", "type": "term", "importance": 0.75 },
-        { "concept": "Chemical energy", "type": "term", "importance": 0.75 },
-        { "concept": "Oxygen", "type": "term", "importance": 0.7 },
-        { "concept": "Carbon Dioxide", "type": "term", "importance": 0.7 }
+        {"concept": "Machine Learning", "type": "process", "importance": 0.95},
+        {"concept": "Supervised Learning", "type": "process", "importance": 0.85},
+        {"concept": "Linear Regression", "type": "term", "importance": 0.7},
+        {"concept": "Web Development", "type": "process", "importance": 0.95},
+        {"concept": "React", "type": "term", "importance": 0.75}
     ]
 
     print("Running Generator Agent test...")

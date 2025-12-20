@@ -74,15 +74,18 @@ Now, generate the JSON object representing the concept map.
         return {}
 
 if __name__ == '__main__':
+    # NEW: Plausible Extractor output for the CS text
     sample_extractor_output = [
-        { "concept": "Photosynthesis", "type": "process", "importance": 0.95 },
-        { "concept": "Light energy", "type": "term", "importance": 0.75 },
-        { "concept": "Chemical energy", "type": "term", "importance": 0.75 },
-        { "concept": "Cellular respiration", "type": "process", "importance": 0.95 },
-        { "concept": "Oxygen", "type": "term", "importance": 0.7 },
-        { "concept": "Carbon Dioxide", "type": "term", "importance": 0.7 },
-        { "concept": "Glucose", "type": "term", "importance": 0.8 },
-        { "concept": "Plants", "type": "term", "importance": 0.9 }
+        {"concept": "Machine Learning", "type": "process", "importance": 0.95},
+        {"concept": "Artificial Intelligence", "type": "term", "importance": 0.9},
+        {"concept": "Supervised Learning", "type": "process", "importance": 0.85},
+        {"concept": "Unsupervised Learning", "type": "process", "importance": 0.85},
+        {"concept": "Linear Regression", "type": "term", "importance": 0.7},
+        {"concept": "Web Development", "type": "process", "importance": 0.95},
+        {"concept": "Frontend development", "type": "term", "importance": 0.8},
+        {"concept": "Backend development", "type": "term", "importance": 0.8},
+        {"concept": "React", "type": "term", "importance": 0.75},
+        {"concept": "Node.js", "type": "term", "importance": 0.75}
     ]
 
     print("Running Organizer Agent test...")

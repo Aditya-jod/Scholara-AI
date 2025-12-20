@@ -56,39 +56,43 @@ def rank_questions(questions: list, concept_map: dict) -> list:
     return ranked_questions
 
 if __name__ == '__main__':
+    # NEW: Updated sample questions and map for CS topic
     sample_questions = [
         {
-            "concept": "Photosynthesis",
-            "question": "What is the primary process plants use to convert light energy into chemical energy?",
-            "options": ["Respiration", "Transpiration", "Photosynthesis", "Decomposition"],
-            "correct_answer": "Photosynthesis"
+            "concept": "Machine Learning",
+            "question": "What is the primary goal of Machine Learning?",
+            "options": ["To explicitly program computers", "To enable computers to learn from data", "To design user interfaces", "To manage server logic"],
+            "correct_answer": "To enable computers to learn from data"
         },
         {
-            "concept": "Light energy",
-            "question": "What type of energy do plants capture to initiate photosynthesis?",
-            "options": ["Kinetic energy", "Nuclear energy", "Light energy", "Potential energy"],
-            "correct_answer": "Light energy"
+            "concept": "React",
+            "question": "Which part of Web Development is the tool 'React' primarily used for?",
+            "options": ["Backend development", "Database management", "Frontend development", "Server deployment"],
+            "correct_answer": "Frontend development"
         }
     ]
     
     sample_concept_map = {
       "concept_map": [
         {
-          "concept": "Plants",
+          "concept": "Artificial Intelligence",
           "children": [
             {
-              "concept": "Photosynthesis",
+              "concept": "Machine Learning",
               "children": [
-                { "concept": "Light energy", "children": [] },
-                { "concept": "Carbon Dioxide", "children": [] },
-                { "concept": "Glucose", "children": [] },
-                { "concept": "Oxygen", "children": [] },
-                { "concept": "Chemical energy", "children": [] }
+                { "concept": "Supervised Learning", "children": [{"concept": "Linear Regression", "children": []}] },
+                { "concept": "Unsupervised Learning", "children": [] }
               ]
             }
           ]
         },
-        { "concept": "Cellular respiration", "children": [] }
+        {
+          "concept": "Web Development",
+          "children": [
+              {"concept": "Frontend development", "children": [{"concept": "React", "children": []}]},
+              {"concept": "Backend development", "children": [{"concept": "Node.js", "children": []}]}
+          ]
+        }
       ]
     }
 
