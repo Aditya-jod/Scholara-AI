@@ -4,7 +4,7 @@ import random
 import time
 from src.utils.llm_client import call_gemini_api
 
-API_CALL_DELAY_SECONDS = 15
+API_CALL_DELAY_SECONDS = 2  # Reduced delay to 2 seconds
 
 def _extract_json_object(text: str) -> str | None:
     """
@@ -37,20 +37,21 @@ def generate_quiz_questions(concepts: list, source_text: str, num_questions: int
     selected_concepts = selected_concepts[:min(len(selected_concepts), num_questions)] # select final concepts
 
     questions = []
-    for concept_obj in selected_concepts:
-        concept_name = concept_obj.get("concept", "Unknown")
-        print(f"Generating question for concept: {concept_name}...")
+    # Ensure we don't try to generate more questions than concepts available
+    num_to_generate = min(num_questions, len(selected_concepts))
 
-        # --- Add delay before each generation call ---
-        print(f"   ...waiting {API_CALL_DELAY_SECONDS}s to respect API rate limit...")
-        time.sleep(API_CALL_DELAY_SECONDS)
-
+    for concept in selected_concepts[:num_to_generate]:
+        print(f"Generating question for concept: {concept['concept']}...")
+        # We add a small delay to be respectful of the API rate limits.
+        print("   ...waiting 2s to respect API rate limit...")
+        time.sleep(2)
+        
         prompt = f"""
 You are an expert Quiz Designer for an educational platform.
 Your task is to create a single, high-quality multiple-choice question based on the provided source text and a specific concept.
 
 RULES:
-- The question must directly test the understanding of the concept: "{concept_name}".
+- The question must directly test the understanding of the concept: "{concept['concept']}".
 - The question should be answerable using only the information present in the source text below.
 - Generate 4 options: one correct answer and three plausible but incorrect distractors.
 - The output must be a SINGLE JSON object with the following keys:
@@ -64,13 +65,13 @@ SOURCE TEXT:
 {source_text}
 ---
 
-Now, generate the JSON for the multiple-choice question about "{concept_name}".
+Now, generate the JSON for the multiple-choice question about "{concept['concept']}".
 """
         try:
             raw_response = call_gemini_api(prompt)
             json_str = _extract_json_object(raw_response)
             if not json_str:
-                print(f"Generator Error: No JSON object found for concept '{concept_name}'. Skipping.")
+                print(f"Generator Error: No JSON object found for concept '{concept['concept']}'. Skipping.")
                 continue
             
             question_obj = json.loads(json_str)
@@ -79,10 +80,10 @@ Now, generate the JSON for the multiple-choice question about "{concept_name}".
             if all(k in question_obj for k in ["concept", "question", "options", "correct_answer"]):
                 questions.append(question_obj)
             else:
-                print(f"Generator Warning: Invalid JSON structure for concept '{concept_name}'. Skipping.")
+                print(f"Generator Warning: Invalid JSON structure for concept '{concept['concept']}'. Skipping.")
 
         except (json.JSONDecodeError, Exception) as e:
-            print(f"Generator failed for concept '{concept_name}': {e}")
+            print(f"Generator failed for concept '{concept['concept']}': {e}")
             continue
             
     return questions

@@ -90,41 +90,41 @@ def run_self_test():
     print("-" * 20)
 
     # --- Agent 5: Validator (and Correction Loop) ---
-    # print("--------------------")
-    # print("6. [AGENT] Running Validator...")
-    #
-    # validated_questions = []
-    # for q in ranked_questions:
-    #     print(f"\n   Validating question for concept: '{q['concept']}' (Difficulty: {q['difficulty']})")
-    #     print("   ...waiting 15s to respect API rate limit...")
-    #     time.sleep(15)
-    #     validation_result = validate_question_difficulty(q)
+    print("--------------------")
+    print("6. [AGENT] Running Validator...")
 
-    #     if "APPROVE" in validation_result:
-    #         print(f"   [DECISION] Validator says: {validation_result}")
-    #         validated_questions.append(q)
-    #     else:
-    #         print(f"   [DECISION] Validator says: {validation_result}")
-    #         print(f"   [ACTION] Re-generating question for '{q['concept']}'...")
-    #         print("   ...waiting 15s to respect API rate limit...")
-    #         time.sleep(15)
-    #         # Try to re-generate once
-    #         new_question_data = generate_quiz_questions([{'concept': q['concept']}], source_text, 1)
-    #         if new_question_data:
-    #             new_q = new_question_data[0]
-    #             # Re-rank the new question
-    #             new_q_ranked_list = rank_questions([new_q], concept_map)
-    #             if new_q_ranked_list:
-    #                 new_q_ranked = new_q_ranked_list[0]
-    #                 print(f"   [SUCCESS] Re-generated and re-ranked. New difficulty: {new_q_ranked['difficulty']}")
-    #                 validated_questions.append(new_q_ranked)
-    #             else:
-    #                 print("   [FAILURE] Could not re-rank the new question.")
-    #         else:
-    #             print("   [FAILURE] Could not re-generate a question.")
-    
-    # For now, let's just use the ranked questions without validation
-    validated_questions = ranked_questions
+    validated_questions = []
+    for q in ranked_questions:
+        print(f"\n   Validating question for concept: '{q['concept']}' (Difficulty: {q['difficulty']})")
+        print("   ...waiting 2s to respect API rate limit...")
+        time.sleep(2)
+        validation_result = validate_question_difficulty(q)
+
+        # BUG FIX: Check the 'decision' key in the returned dictionary.
+        # The previous check `if "APPROVE" in validation_result:` was incorrect.
+        if validation_result and validation_result.get('decision') == 'approve':
+            print(f"   [DECISION] Validator says: {validation_result.get('decision')}")
+            validated_questions.append(q)
+        else:
+            reason = validation_result.get('reason') if validation_result else "No response from validator."
+            print(f"   [DECISION] Validator says: REJECT. Reason: {reason}")
+            print(f"   [ACTION] Re-generating question for '{q['concept']}'...")
+            print("   ...waiting 2s to respect API rate limit...")
+            time.sleep(2)
+            # Try to re-generate once
+            new_question_data = generate_quiz_questions([{'concept': q['concept']}], source_text, 1)
+            if new_question_data:
+                new_q = new_question_data[0]
+                # Re-rank the new question
+                new_q_ranked_list = rank_questions([new_q], concept_map)
+                if new_q_ranked_list:
+                    new_q_ranked = new_q_ranked_list[0]
+                    print(f"   [SUCCESS] Re-generated and re-ranked. New difficulty: {new_q_ranked['difficulty']}")
+                    validated_questions.append(new_q_ranked)
+                else:
+                    print("   [FAILURE] Could not re-rank the new question.")
+            else:
+                print("   [FAILURE] Could not re-generate a question.")
 
     print("="*40)
     print(" SELF-TEST COMPLETE ")
