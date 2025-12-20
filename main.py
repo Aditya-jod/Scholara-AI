@@ -29,7 +29,7 @@ def run_self_test():
     print("-" * 20)
 
     print("--------------------")
-    print("2. [AGENT] Running Extractor...")
+    print("2. [AGENT] Running Cognito, the Concept Extractor...")
     
     # Check cache for Extractor
     extracted_concepts = get_cached_result('extractor', source_text)
@@ -44,7 +44,7 @@ def run_self_test():
     print("-" * 20)
 
     print("--------------------")
-    print("3. [AGENT] Running Organizer...")
+    print("3. [AGENT] Running Arbor, the Knowledge Organizer...")
 
     # Check cache for Organizer
     concept_map = get_cached_result('organizer', source_text, extracted_concepts)
@@ -59,7 +59,7 @@ def run_self_test():
     print("-" * 20)
 
     print("--------------------")
-    print("4. [AGENT] Running Generator...")
+    print("4. [AGENT] Running Quest, the Question Generator...")
 
     # Check cache for Generator
     # Note: Generator has randomness, so caching might not be ideal if you want variety every time.
@@ -75,7 +75,7 @@ def run_self_test():
     print(f"   [OUTPUT] Generated {len(generated_questions)} Questions.")
 
     print("--------------------")
-    print("5. [AGENT] Running Ranker...")
+    print("5. [AGENT] Running Scala, the Difficulty Ranker...")
     # Ranker is a local, deterministic function, so caching provides less benefit,
     # but we'll do it for consistency.
     ranked_questions = get_cached_result('ranker', source_text, generated_questions)
@@ -91,7 +91,7 @@ def run_self_test():
 
     # --- Agent 5: Validator (and Correction Loop) ---
     print("--------------------")
-    print("6. [AGENT] Running Validator...")
+    print("6. [AGENT] Running Veritas, the Validator...")
 
     validated_questions = []
     for q in ranked_questions:
