@@ -1,31 +1,31 @@
 # Scholara AI 🧠✨
 
-**Scholara AI** is an autonomous, multi-agent system designed to transform any piece of text into a structured, hierarchical knowledge base and generate a comprehensive quiz from it. Built for the modern learner, Scholara AI uses a sophisticated 5-agent pipeline to deconstruct, organize, and assess knowledge.
+**Scholara AI** is an autonomous, multi-agent system designed to transform educational content—from raw text or PDF files—into a structured knowledge base and a comprehensive quiz. Built for the modern learner, Scholara AI uses a sophisticated 5-agent pipeline to deconstruct, organize, and assess knowledge.
 
-This project was developed as part of a 24-hour hackathon, demonstrating rapid prototyping of complex AI systems.
+This project was developed as part of a 24-hour hackathon, demonstrating the rapid prototyping of complex, multi-agent AI systems.
 
 ## 🚀 Key Features
 
+- **Multi-Format Input:** Process educational content from either pasted text or uploaded PDF documents.
 - **Autonomous 5-Agent Pipeline:** A team of specialized AI agents work in concert to process information.
 - **Hierarchical Concept Mapping:** Automatically generates a tree-like structure of concepts, showing relationships between main topics and sub-topics.
 - **Dynamic Quiz Generation:** Creates multiple-choice questions based on the extracted concepts.
-- **Intelligent Difficulty Ranking:** A rule-based agent ranks questions as "Easy," "Medium," or "Hard" based on their conceptual depth.
-- **AI-Powered Validation:** A "critic" agent reviews generated questions to ensure their difficulty is appropriate.
-- **SQLite Caching Layer:** Drastically improves speed and reliability by caching agent results, minimizing redundant API calls and making the system resilient to API rate limits.
+- **Intelligent Validation & Ranking:** Agents review generated questions for quality, correctness, and difficulty.
+- **Demo-Ready:** Includes pre-canned text examples and a `mock` mode to ensure smooth, API-free demonstrations.
 
 ## 🏗️ Architecture
 
-Scholara AI operates through a sequential pipeline of five distinct agents, with a caching layer for optimization.
+Scholara AI operates through a sequential pipeline of five distinct agents. The system can run in `live` mode (calling the Gemini API) or `mock` mode (using pre-generated data to avoid API rate limits).
 
 ```
-[Input Text]
+[Input Text / PDF]
       |
       v
-+----------------+   1. [Extractor Agent]   -> Extracts key concepts as a flat list.
-|   CACHE CHECK  |   2. [Organizer Agent]   -> Builds a hierarchical concept map.
++----------------+   1. [Extractor Agent]   -> Extracts key concepts.
+|  AGENT PIPELINE  |   2. [Organizer Agent]   -> Builds a hierarchical concept map.
 +----------------+   3. [Generator Agent]   -> Creates quiz questions from concepts.
       |              4. [Ranker Agent]      -> Assigns difficulty to questions.
-      v              5. [Validator Agent]   -> Approves or rejects question difficulty.
+      v              5. [Validator Agent]   -> Approves or rejects questions.
 [Final Quiz]
 ```
 
@@ -33,9 +33,8 @@ Scholara AI operates through a sequential pipeline of five distinct agents, with
 
 - **Backend:** Python
 - **AI:** Google Gemini API (`gemini-1.5-flash`)
-- **Web Framework:** Streamlit (for the UI)
-- **Database:** SQLite (for caching)
-- **Core Libraries:** `requests`, `argparse`, `json`, `hashlib`
+- **Web Framework:** Streamlit
+- **Core Libraries:** `pypdf` (for PDF extraction), `pandas`
 
 ## ⚙️ How to Run
 
@@ -69,26 +68,18 @@ Create a file named `.env` in the root of the project and add your API key:
 GEMINI_API_KEY="YOUR_API_KEY_HERE"
 ```
 
-### 4. Run the Self-Test (Backend Pipeline)
+### 4. Run the Web Application
 
-To test the entire agent pipeline, run the `main.py` script with the `--self-test` flag. The first run will be slow as it populates the cache. Subsequent runs will be nearly instant.
-
-```bash
-python main.py --self-test
-```
-
-### 5. Run the Web Application
-
-To start the Streamlit user interface, run `app.py`:
+To start the Streamlit user interface, run `streamlit_app.py`:
 
 ```bash
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
+The application can be switched between `live` and `mock` modes by changing the `MODE` variable in `run_pipeline.py`.
 
 ## 🔮 Future Work
 
-- [ ] **Full UI Integration:** Connect the Streamlit UI to the backend agent pipeline.
+- [ ] **Refactor with PipelineState:** Fully integrate the `PipelineState` class to manage data flow between agents.
 - [ ] **User Accounts:** Allow users to save and review past quizzes.
-- [ ] **Cloud SQL Migration:** Upgrade the caching layer from SQLite to a production-grade database like Google Cloud SQL.
-- **Feedback Loop:** Allow user feedback on question quality to fine-tune the agents.
-- **LangGraph Integration:** Re-architect the agent pipeline using a formal framework like LangGraph for more complex interactions and state management.
+- [ ] **Feedback Loop:** Allow user feedback on question quality to fine-tune the agents.
+- [ ] **LangGraph Integration:** Re-architect the agent pipeline using a formal framework like LangGraph for more complex interactions and state management.
