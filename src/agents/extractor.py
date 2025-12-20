@@ -84,7 +84,6 @@ TEXT:
 
 if __name__ == "__main__":
     print("Running Extractor Agent test...")
-    # NEW: Computer Science sample text
     sample_text = """
     Machine Learning is a subfield of Artificial Intelligence that gives computers the ability to learn without being explicitly programmed. It is broadly divided into Supervised Learning, which uses labeled data, and Unsupervised Learning, which finds patterns in unlabeled data. A common Supervised Learning algorithm is Linear Regression. Web Development involves creating websites and applications. It consists of Frontend development, which focuses on the user interface using tools like React, and Backend development, which manages the server, database, and application logic using technologies like Node.js.
     """
