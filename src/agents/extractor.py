@@ -83,12 +83,10 @@ TEXT:
 
 
 if __name__ == "__main__":
-    sample_text = """
-    Photosynthesis is a process used by plants, algae, and certain bacteria to convert light energy into chemical energy.
-    Cellular respiration allows organisms to extract energy from food using oxygen. It involves glycolysis, the Krebs cycle, and the electron transport chain.
-    Newton's First Law of Motion states that an object at rest stays at rest and an object in motion stays in motion unless acted upon by an external force.
-    """
-
     print("Running Extractor Agent test...")
+    # NEW: Computer Science sample text
+    sample_text = """
+    Machine Learning is a subfield of Artificial Intelligence that gives computers the ability to learn without being explicitly programmed. It is broadly divided into Supervised Learning, which uses labeled data, and Unsupervised Learning, which finds patterns in unlabeled data. A common Supervised Learning algorithm is Linear Regression. Web Development involves creating websites and applications. It consists of Frontend development, which focuses on the user interface using tools like React, and Backend development, which manages the server, database, and application logic using technologies like Node.js.
+    """
     concepts = extract_concepts(sample_text)
     print(json.dumps(concepts, indent=2))
