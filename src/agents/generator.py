@@ -1,7 +1,10 @@
 import json
 import re
 import random
+import time
 from src.utils.llm_client import call_gemini_api
+
+API_CALL_DELAY_SECONDS = 15
 
 def _extract_json_object(text: str) -> str | None:
     """
@@ -31,12 +34,16 @@ def generate_quiz_questions(concepts: list, source_text: str, num_questions: int
     concepts.sort(key=lambda x: x.get('importance', 0), reverse=True)
     selected_concepts = concepts[:min(len(concepts), num_questions * 2)] # take a pool of important concepts
     random.shuffle(selected_concepts)
-    selected_concepts = selected_concepts[:min(len(selected_concepts), num_questions)]
+    selected_concepts = selected_concepts[:min(len(selected_concepts), num_questions)] # select final concepts
 
     questions = []
     for concept_obj in selected_concepts:
         concept_name = concept_obj.get("concept", "Unknown")
         print(f"Generating question for concept: {concept_name}...")
+
+        # --- Add delay before each generation call ---
+        print(f"   ...waiting {API_CALL_DELAY_SECONDS}s to respect API rate limit...")
+        time.sleep(API_CALL_DELAY_SECONDS)
 
         prompt = f"""
 You are an expert Quiz Designer for an educational platform.
