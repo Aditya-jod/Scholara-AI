@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+.venv
+venv
+env
+
+# Environment variables - VERY IMPORTANT
+.env
+
+# IDE / Editor specific
+.vscode/
+.idea/
+
+# Database files
+*.db
+*.sqlite3
+
+# Data files from uploads
+data/raw/
