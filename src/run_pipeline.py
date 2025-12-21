@@ -9,7 +9,7 @@ from src.agents.ranker import rank_questions
 from src.agents.validator import validate_question_difficulty
 
 # --- Configuration ---
-MODE = "mock"
+MODE = "live" # Options: "live" or "mock" live is for API calls, mock uses predefined data becasue of rate limits in API usage
 
 # Set environment variable so LLM client knows the mode
 os.environ["MODE"] = MODE
