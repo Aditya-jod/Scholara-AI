@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from src.agents.extractor import extract_concepts
 from src.agents.organizer import organize_concepts
@@ -8,7 +9,10 @@ from src.agents.ranker import rank_questions
 from src.agents.validator import validate_question_difficulty
 
 # --- Configuration ---
-MODE = "live"
+MODE = "mock"
+
+# Set environment variable so LLM client knows the mode
+os.environ["MODE"] = MODE
 
 logging.basicConfig(
     level=logging.INFO,

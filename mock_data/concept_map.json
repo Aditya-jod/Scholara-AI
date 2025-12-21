@@ -1,0 +1,43 @@
+{
+  "concept_map": [
+    {
+      "concept": "Machine Learning",
+      "children": [
+        {
+          "concept": "Core Idea",
+          "children": []
+        },
+        {
+          "concept": "Types of Learning",
+          "children": [
+            {
+              "concept": "Supervised Learning",
+              "children": []
+            },
+            {
+              "concept": "Unsupervised Learning",
+              "children": []
+            }
+          ]
+        },
+        {
+          "concept": "Applications",
+          "children": [
+            {
+              "concept": "Speech Recognition",
+              "children": []
+            },
+            {
+              "concept": "Computer Vision",
+              "children": []
+            },
+            {
+              "concept": "Predictive Analytics",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

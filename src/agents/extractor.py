@@ -1,5 +1,6 @@
 import json
 import re
+from typing import Optional
 
 from src.utils.llm_client import call_gemini_api
 import src.utils.llm_client as llm
@@ -7,7 +8,7 @@ import src.utils.llm_client as llm
 print("LLM CLIENT FILE PATH:", llm.__file__)
 
 
-def _extract_json_array(text: str) -> str | None:
+def _extract_json_array(text: str) -> Optional[str]:
     """
     Extracts the first JSON array found in a string.
     """
