@@ -1,100 +1,67 @@
+from src.utils.llm_client import call_gemini_api
 import json
-from typing import Optional, Tuple
+import re
 
-
-def _find_concept_in_tree(
-    concept_name: str,
-    node: dict,
-    depth: int = 0
-) -> Optional[Tuple[dict, int]]:
-    """
-    Recursively searches for a concept node in the concept map.
-    Returns (node, depth) if found.
-    """
-    if node.get("concept") == concept_name:
-        return node, depth
-
-    for child in node.get("children", []):
-        found = _find_concept_in_tree(concept_name, child, depth + 1)
-        if found:
-            return found
-
-    return None
-
-
-def _calculate_difficulty(depth: int, child_count: int) -> str:
-    """
-    Difficulty heuristic based on concept depth and breadth.
-    """
-    if depth >= 3:
-        return "Hard"
-    if child_count == 0:
-        return "Easy"
-    if child_count <= 2:
-        return "Medium"
-    return "Hard"
-
-
-def _calculate_importance(depth: int) -> str:
-    """
-    Importance reflects conceptual centrality.
-    """
-    if depth == 0:
-        return "Core"
-    if depth <= 2:
-        return "Important"
-    return "Supporting"
-
+def _extract_json_object(text: str):
+    match = re.search(r"\{[\s\S]*\}", text)
+    return match.group(0) if match else None
 
 def rank_questions(questions: list, concept_map: dict) -> list:
     """
-    Assigns difficulty and importance to each question
-    based on its concept's position in the concept hierarchy.
-
-    Returns a NEW list (no mutation).
+    Uses LLM to assign difficulty and importance based on concept hierarchy.
     """
     ranked_questions = []
 
     for idx, question in enumerate(questions, start=1):
-        concept_name = question.get("concept")
+        concept_name = question.get("concept", "Unknown")
+        
+        prompt = f"""
+You are an Educational Assessment Expert. Analyze this concept's position in the knowledge hierarchy and assign appropriate difficulty and importance.
 
-        # Safe defaults (never N/A)
-        difficulty = "Medium"
-        importance = "Important"
-        depth = None
-        child_count = None
+CONCEPT: {concept_name}
 
-        if concept_name:
-            for root_node in concept_map.get("concept_map", []):
-                result = _find_concept_in_tree(concept_name, root_node)
-                if result:
-                    found_node, depth = result
-                    child_count = len(found_node.get("children", []))
+FULL CONCEPT HIERARCHY:
+{json.dumps(concept_map, indent=2)}
 
-                    difficulty = _calculate_difficulty(depth, child_count)
-                    importance = _calculate_importance(depth)
-                    break
-            else:
-                # Concept not found → treat as simple fact
-                difficulty = "Easy"
-                importance = "Supporting"
+RULES FOR DIFFICULTY:
+- Root/broad concepts (depth 0-1): "Hard"
+- Mid-level concepts (depth 2-3): "Medium"  
+- Leaf/specific concepts (depth 4+): "Easy"
+
+RULES FOR IMPORTANCE:
+- Core concepts: "Core"
+- Supporting concepts: "Important"
+- Detailed concepts: "Supporting"
+
+Return ONLY this JSON:
+{{
+  "difficulty": "Hard|Medium|Easy",
+  "importance": "Core|Important|Supporting"
+}}
+"""
+
+        try:
+            raw_response = call_gemini_api(prompt)
+            json_str = _extract_json_object(raw_response)
+            ranking = json.loads(json_str) if json_str else {}
+            
+            difficulty = ranking.get("difficulty", "Medium")
+            importance = ranking.get("importance", "Important")
+            
+        except Exception as e:
+            print(f"Ranker LLM error: {e}")
+            difficulty = "Medium"
+            importance = "Important"
 
         ranked_question = {
             **question,
-            "question_id": question.get("question_id", idx),
+            "question_id": idx,
             "difficulty": difficulty,
-            "importance": importance,
-            "ranker_metadata": {
-                "concept": concept_name,
-                "depth": depth,
-                "child_count": child_count
-            }
+            "importance": importance
         }
-
         ranked_questions.append(ranked_question)
 
     return ranked_questions
-
 
 if __name__ == "__main__":
     sample_questions = [

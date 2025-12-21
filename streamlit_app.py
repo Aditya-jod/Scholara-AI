@@ -77,19 +77,29 @@ def extract_text_from_pdf(pdf_file):
         return None
 
 def display_concepts_recursively(data, level=0):
-    """Recursively displays nested concept data in a readable list."""
+    """Display concept hierarchy properly."""
+    indent = '&#8195;' * level * 2
+    
     if isinstance(data, dict):
-        for key, value in data.items():
-            st.markdown(f"{'&#8195;' * level * 2}• **{key}**")
-            display_concepts_recursively(value, level + 1)
-            if key.lower() == "importance" and (value is None or value == "" or value == []):
-                st.markdown(f"{'&#8195;' * (level + 1) * 2}• *Core foundational concept*")
-                continue
+        # Handle concept_map wrapper
+        if "concept_map" in data:
+            display_concepts_recursively(data["concept_map"], level)
+        # Handle individual concept nodes
+        elif "concept" in data:
+            concept_name = data.get("concept", "Unknown")
+            st.markdown(f"{indent}• **{concept_name}**")
+            if data.get("children"):
+                for child in data["children"]:
+                    display_concepts_recursively(child, level + 1)
+        else:
+            # Generic dict display
+            for key, value in data.items():
+                st.markdown(f"{indent}• **{key}**")
+                display_concepts_recursively(value, level + 1)
+                
     elif isinstance(data, list):
         for item in data:
             display_concepts_recursively(item, level)
-    elif isinstance(data, str):
-        st.markdown(f"{'&#8195;' * level * 2}• {data}")
 
 
 # --- UI ---
