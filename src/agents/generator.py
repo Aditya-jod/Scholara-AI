@@ -4,7 +4,7 @@ import random
 import time
 from src.utils.llm_client import call_gemini_api
 
-API_CALL_DELAY_SECONDS = 2  # Reduced delay to 2 seconds
+API_CALL_DELAY_SECONDS = 2
 
 def _extract_json_object(text: str) -> str | None:
     """
@@ -17,79 +17,77 @@ def _extract_json_object(text: str) -> str | None:
 
 def generate_quiz_questions(concepts: list, source_text: str, num_questions: int = 10) -> list:
     """
-    Generates a list of multiple-choice quiz questions based on a list of concepts
-    and the original source text.
-
-    Args:
-        concepts: The flat list of concept objects from the Extractor.
-        source_text: The original text to provide context for question generation.
-        num_questions: The desired number of questions.
-
-    Returns:
-        A list of quiz question objects.
+    Generates multiple-choice quiz questions based on extracted concepts.
     """
-    
-    # Sort concepts by importance to prioritize more significant topics
-    # and shuffle to add variety if there are many important concepts.
-    concepts.sort(key=lambda x: x.get('importance', 0), reverse=True)
-    selected_concepts = concepts[:min(len(concepts), num_questions * 2)] # take a pool of important concepts
-    random.shuffle(selected_concepts)
-    selected_concepts = selected_concepts[:min(len(selected_concepts), num_questions)] # select final concepts
+
+    if not isinstance(concepts, list):
+        raise TypeError("Expected concepts to be a list")
+
+    sorted_concepts = sorted(
+        concepts,
+        key=lambda c: c.get("importance", 0),
+        reverse=True
+    )
+
+    selected_concepts = sorted_concepts[:min(len(sorted_concepts), num_questions)]
 
     questions = []
-    # Ensure we don't try to generate more questions than concepts available
-    num_to_generate = min(num_questions, len(selected_concepts))
 
-    for concept in selected_concepts[:num_to_generate]:
-        print(f"Generating question for concept: {concept['concept']}...")
-        # We add a small delay to be respectful of the API rate limits.
-        print("   ...waiting 2s to respect API rate limit...")
-        time.sleep(2)
-        
+    for concept in selected_concepts:
+        concept_name = concept.get("concept")
+        if not concept_name:
+            continue
+
+        print(f"Generating question for concept: {concept_name}")
+        time.sleep(API_CALL_DELAY_SECONDS)
+
         prompt = f"""
-You are an expert Quiz Designer for an educational platform.
-Your task is to create a single, high-quality multiple-choice question based on the provided source text and a specific concept.
+You are an expert Quiz Designer.
+
+Create ONE multiple-choice question for the concept "{concept_name}".
 
 RULES:
-- The question must directly test the understanding of the concept: "{concept['concept']}".
-- The question should be answerable using only the information present in the source text below.
-- Generate 4 options: one correct answer and three plausible but incorrect distractors.
-- The output must be a SINGLE JSON object with the following keys:
-  - "concept": The concept the question is about.
-  - "question": The text of the question.
-  - "options": A list of 4 strings (the choices).
-  - "correct_answer": The string of the correct answer, which must be one of the items in the "options" list.
+- Use ONLY the source text
+- Generate 4 options
+- 1 correct answer
+- Output ONLY valid JSON
+
+FORMAT:
+{{
+  "concept": "{concept_name}",
+  "question": "...",
+  "options": ["A", "B", "C", "D"],
+  "correct_answer": "A"
+}}
 
 SOURCE TEXT:
----
 {source_text}
----
-
-Now, generate the JSON for the multiple-choice question about "{concept['concept']}".
 """
+
         try:
             raw_response = call_gemini_api(prompt)
             json_str = _extract_json_object(raw_response)
-            if not json_str:
-                print(f"Generator Error: No JSON object found for concept '{concept['concept']}'. Skipping.")
-                continue
-            
-            question_obj = json.loads(json_str)
-            
-            # Basic validation
-            if all(k in question_obj for k in ["concept", "question", "options", "correct_answer"]):
-                questions.append(question_obj)
-            else:
-                print(f"Generator Warning: Invalid JSON structure for concept '{concept['concept']}'. Skipping.")
 
-        except (json.JSONDecodeError, Exception) as e:
-            print(f"Generator failed for concept '{concept['concept']}': {e}")
-            continue
-            
+            if not json_str:
+                continue
+
+            question = json.loads(json_str)
+
+            if (
+                isinstance(question, dict)
+                and "question" in question
+                and isinstance(question.get("options"), list)
+                and "correct_answer" in question
+            ):
+                questions.append(question)
+
+        except Exception as e:
+            print(f"Generator error for {concept_name}: {e}")
+
     return questions
 
+
 if __name__ == '__main__':
-    # NEW: Updated sample text and concepts for CS topic
     sample_source_text = """
     Machine Learning is a subfield of Artificial Intelligence that gives computers the ability to learn without being explicitly programmed. It is broadly divided into Supervised Learning, which uses labeled data, and Unsupervised Learning, which finds patterns in unlabeled data. A common Supervised Learning algorithm is Linear Regression. Web Development involves creating websites and applications. It consists of Frontend development, which focuses on the user interface using tools like React, and Backend development, which manages the server, database, and application logic using technologies like Node.js.
     """

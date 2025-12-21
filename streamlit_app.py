@@ -82,6 +82,9 @@ def display_concepts_recursively(data, level=0):
         for key, value in data.items():
             st.markdown(f"{'&#8195;' * level * 2}• **{key}**")
             display_concepts_recursively(value, level + 1)
+            if key.lower() == "importance" and (value is None or value == "" or value == []):
+                st.markdown(f"{'&#8195;' * (level + 1) * 2}• *Core foundational concept*")
+                continue
     elif isinstance(data, list):
         for item in data:
             display_concepts_recursively(item, level)
@@ -103,7 +106,6 @@ with st.sidebar:
     )
     st.markdown(f"**Execution Mode:** `{MODE.upper()}`")
 
-    # --- ADDED: Explanation for Mock Mode ---
     if MODE == 'mock':
         st.warning(
             "**Note on Mock Mode:** To avoid hitting free API rate limits and to ensure a smooth demo, this mode uses pre-generated data instead of making live AI calls."
@@ -120,7 +122,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # --- RESTORED: Project Purpose / Hackathon Info Box ---
     st.markdown(
         """
         <div style='background-color:#1E1E2F; color:white; padding:15px; border-radius:8px; line-height:1.4em;'>
@@ -199,27 +200,42 @@ if st.session_state.results:
         else:
             st.warning("No concepts were extracted.")
 
-    # ---- 2. Generated Quiz ----
+        # ---- 2. Generated Quiz ----
     with st.container(border=True):
         st.header("2️⃣ Generated Quiz")
         quiz_data = st.session_state.results.get("quiz")
         validation_data = st.session_state.results.get("validation")
 
         if quiz_data and validation_data and len(quiz_data) == len(validation_data):
-            # --- MODIFIED: Zip quiz and validation data together ---
             for i, (q, v) in enumerate(zip(quiz_data, validation_data), 1):
-                with st.expander(f"**Question {i}:** {q['question']}"):
+                with st.expander(f"**Question {i}:** {q.get('question', 'N/A')}"):
                     st.markdown("**Options:**")
-                    for opt in q["options"]:
-                        prefix = "✅" if opt == q["correct_answer"] else "◻️"
+                    options = q.get("options", [])
+                    correct_answer = q.get("correct_answer")
+                    for opt in options:
+                        prefix = "✅" if opt == correct_answer else "◻️"
                         st.markdown(f"> {prefix} {opt}")
                     
-                    st.markdown("---") # Add a separator
-                    # --- FIXED: Get difficulty and decision from the validation object 'v' ---
-                    st.markdown(f"**Difficulty:** `{v.get('difficulty', 'N/A')}`")
-                    st.markdown(f"**Validator Decision:** `{v.get('decision', 'N/A')}`")
+                    st.markdown("---")
+                    difficulty = q.get('difficulty', 'Not assigned')
+                    if not difficulty or difficulty == 'N/A' or difficulty == '':
+                        difficulty = 'Medium (Default)'
+                    
+                    importance = q.get('importance', 'Not assigned')
+                    if not importance or importance == 'N/A' or importance == '':
+                        importance = 'Standard'
+                    
+                    decision = v.get('decision', 'Pending')
+                    reason = v.get('reason', 'No reason provided')
+                    
+                    st.markdown(f"**Difficulty:** `{difficulty}`")
+                    st.markdown(f"**Importance:** `{importance}`")
+                    st.markdown(f"**Validator Decision:** `{decision}`")
+                    st.markdown(f"**Validator Reason:** `{reason}`")
+
         else:
-            st.warning("No quiz questions were generated or validation data is missing.")
+            st.warning("No quiz questions were generated or validation data is missing/mismatched.")
+
 
     # ---- 3. Validator Output ----
     with st.container(border=True):
