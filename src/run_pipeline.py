@@ -6,12 +6,11 @@ from src.agents.extractor import extract_concepts
 from src.agents.organizer import organize_concepts
 from src.agents.generator import generate_quiz_questions
 from src.agents.ranker import rank_questions
-from src.agents.validator import validate_question_difficulty
+from src.agents.validator import validate_questions
 
 # --- Configuration ---
-MODE = "live" # Options: "live" or "mock" live is for API calls, mock uses predefined data becasue of rate limits in API usage
+MODE = "mock" # Options: "live" or "mock" live is for API calls, mock uses predefined data becasue of rate limits in API usage
 
-# Set environment variable so LLM client knows the mode
 os.environ["MODE"] = MODE
 
 logging.basicConfig(
@@ -72,7 +71,7 @@ def run_full_pipeline(source_text):
     validation_results = []
 
     for idx, question in enumerate(ranked_questions):
-        result = validate_question_difficulty(question)
+        result = validate_questions(question)
         result["question_id"] = idx
         validation_results.append(result)
 
