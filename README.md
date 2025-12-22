@@ -77,10 +77,4 @@ streamlit run streamlit_app.py
 ```
 The application can be switched between `live` and `mock` modes by changing the `MODE` variable in `run_pipeline.py`.
 
-## 🔮 Future Work
-
-- [ ] **Refactor with PipelineState:** Fully integrate the `PipelineState` class to manage data flow between agents.
-- [ ] **User Accounts:** Allow users to save and review past quizzes.
-- [ ] **Feedback Loop:** Allow user feedback on question quality to fine-tune the agents.
-- [ ] **LangGraph Integration:** Re-architect the agent pipeline using a formal framework like LangGraph for more complex interactions and state management.
 
