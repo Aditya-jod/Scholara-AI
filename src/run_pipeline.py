@@ -9,7 +9,7 @@ from src.agents.ranker import rank_questions
 from src.agents.validator import validate_questions
 
 # --- Configuration ---
-MODE = "mock" # Options: "live" or "mock" live is for API calls, mock uses predefined data becasue of rate limits in API usage
+MODE = "live" # Options: "live" or "mock" live is for API calls, mock uses predefined data becasue of rate limits in API usage
 
 os.environ["MODE"] = MODE
 
